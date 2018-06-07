@@ -10,26 +10,9 @@ import sys
 import json
 import pyodbc
 
-class GardenWasteRequest():
+class Request():
     """
-    Represents a request for more garden waste sacks
-    """
-    def __init__(self, occup: str, addr: str, case_ref: str, num_subs: str):
-        """
-        Args:
-            occup (str): The occupier of the property
-            addr (str): The address of the property
-            case_ref (str): The case reference of the request
-            num_subs (str): The number of subscriptions the property has
-        """
-        self.occup = occup
-        self.addr = addr
-        self.case_ref = case_ref
-        self.num_subs = num_subs
-
-class RecyclingRequest():
-    """
-    Represents a request for more recycling sacks
+    Parent class for GardenWasteRequest and RecyclingRequest
     """
     def __init__(self, occup: str, addr: str, case_ref: str):
         """
@@ -41,6 +24,28 @@ class RecyclingRequest():
         self.occup = occup
         self.addr = addr
         self.case_ref = case_ref
+
+class GardenWasteRequest(Request):
+    """
+    Represents a request for more garden waste sacks
+    """
+    def __init__(self, occup: str, addr: str, case_ref: str, num_subs: str):
+        """
+        Args:
+            num_subs (str): The number of subscriptions the property has
+        """
+        super().__init__(occup, addr, case_ref)
+        self.num_subs = num_subs
+
+class RecyclingRequest(Request):
+    """
+    Represents a request for more recycling sacks
+    """
+    def __init__(self, occup: str, addr: str, case_ref: str):
+        """
+        No different to the parent Request class, so has no extra attributes
+        """
+        super().__init__(occup, addr, case_ref)
 
 def query_gw_requests(conn: pyodbc.Connection) -> list:
     """
@@ -89,6 +94,10 @@ def query_rec_requests(conn: pyodbc.Connection) -> list:
             result.case_ref))
     return rec_requests
 
+def create_html_template() -> str:
+    """
+    Creates the html template
+    """
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
@@ -107,8 +116,9 @@ if __name__ == '__main__':
         sys.exit(1)
     gw_requests = query_gw_requests(CONN)
     rec_requests = query_rec_requests(CONN)
+    print('--gw--')
     for gw_request in gw_requests:
         print(gw_request.addr)
-    print()
+    print('\n--rec--')
     for rec_request in rec_requests:
         print(rec_request.addr)
