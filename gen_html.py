@@ -94,10 +94,36 @@ def query_rec_requests(conn: pyodbc.Connection) -> list:
             result.case_ref))
     return rec_requests
 
-def create_html_template() -> str:
+def create_html(request: Request) -> str:
     """
-    Creates the html template
+    Creates the HTML using the request information
+    Args:
+        request (Request): The GardenWasteRequest or RecyclingRequest
+        to fill the template with
     """
+    html = '' \
+        '<!DOCTYPE html>\n' \
+        '<html>\n' \
+        '<head>\n' \
+        '    <style>\n' \
+        '        body {\n' \
+        '            background-color: white;\n' \
+        '            color: #003366;\n' \
+        '            font-family: calibri, verdana, sans-serif;\n' \
+        '            font-size: 80%;\n' \
+        '        }\n' \
+        '        p {\n' \
+        '            font-weight: bold;\n' \
+        '        }\n' \
+        '    </style>\n' \
+        '</head>\n' \
+        '<body>\n' \
+        '    <div>\n' \
+       f'        {request.addr}\n' \
+        '    </div>\n' \
+        '</body>\n' \
+        '</html>'
+    print(html)
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
@@ -116,9 +142,5 @@ if __name__ == '__main__':
         sys.exit(1)
     gw_requests = query_gw_requests(CONN)
     rec_requests = query_rec_requests(CONN)
-    print('--gw--')
-    for gw_request in gw_requests:
-        print(gw_request.addr)
-    print('\n--rec--')
     for rec_request in rec_requests:
-        print(rec_request.addr)
+        create_html(rec_request)
