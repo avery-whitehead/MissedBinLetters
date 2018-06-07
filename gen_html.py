@@ -42,7 +42,7 @@ class RecyclingRequest():
         self.addr = addr
         self.case_ref = case_ref
 
-def query_gw_addresses(conn: pyodbc.Connection) -> list:
+def query_gw_requests(conn: pyodbc.Connection) -> list:
     """
     Queries the SQL database for the addresses of people who requested
     garden waste sacks
@@ -52,15 +52,21 @@ def query_gw_addresses(conn: pyodbc.Connection) -> list:
         A list of GardenWasteRequest objects containing the information
         from the query
     """
+    gw_requests = []
     with open('.\\gw_address_info.sql') as gw_query_f:
         gw_query = gw_query_f.read()
     cursor = conn.cursor()
     cursor.execute(gw_query)
     results = cursor.fetchall()
-    print('--gw--')
-    print(results)
+    for result in results:
+        gw_requests.append(GardenWasteRequest(
+            result.occupier,
+            result.address,
+            result.case_ref,
+            result.num_subs))
+    return gw_requests
 
-def query_rec_addresses(conn: pyodbc.Connection) -> list:
+def query_rec_requests(conn: pyodbc.Connection) -> list:
     """
     Queries the SQL database for the addresses of people who requested
     recycling sacks
@@ -70,13 +76,18 @@ def query_rec_addresses(conn: pyodbc.Connection) -> list:
         A list of RecyclingRequest objects containing the information from
         the query
     """
+    rec_requests = []
     with open('.\\rec_address_info.sql') as rec_query_f:
         rec_query = rec_query_f.read()
     cursor = conn.cursor()
     cursor.execute(rec_query)
     results = cursor.fetchall()
-    print('--rec--')
-    print(results)
+    for result in results:
+        rec_requests.append(RecyclingRequest(
+            result.occupier,
+            result.address,
+            result.case_ref))
+    return rec_requests
 
 
 if __name__ == '__main__':
@@ -94,5 +105,10 @@ if __name__ == '__main__':
         with open('.\\missed_bin_letters', 'a') as log:
             log.write(f'{SYSTIME} - {error}\n')
         sys.exit(1)
-    query_gw_addresses(CONN)
-    query_rec_addresses(CONN)
+    gw_requests = query_gw_requests(CONN)
+    rec_requests = query_rec_requests(CONN)
+    for gw_request in gw_requests:
+        print(gw_request.addr)
+    print()
+    for rec_request in rec_requests:
+        print(rec_request.addr)
