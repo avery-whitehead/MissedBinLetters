@@ -210,9 +210,8 @@ def create_html(request: Request) -> str:
         '}' \
         '.addr {\n' \
         'font-weight: bold;\n' \
-        'padding-left: 100px;\n' \
-        ' padding-top: 175px;\n' \
-        'font-size: 22px;\n' \
+        'padding-top: 70px;\n' \
+        'font-size: 18px;\n' \
         'page-break-after: always;\n' \
         '}\n' \
         '.content {\n' \
