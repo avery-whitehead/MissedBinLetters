@@ -105,22 +105,27 @@ def create_html(request: Request) -> str:
         '<!DOCTYPE html>\n' \
         '<html>\n' \
         '<head>\n' \
+        '    <link rel="stylesheet" href=".\\paper.css">\n' \
         '    <style>\n' \
         '        body {\n' \
-        '            background-color: white;\n' \
-        '            color: #003366;\n' \
-        '            font-family: calibri, verdana, sans-serif;\n' \
-        '            font-size: 80%;\n' \
+        '            font-family: sans-serif;\n' \
         '        }\n' \
-        '        p {\n' \
+        '        .addr {\n' \
         '            font-weight: bold;\n' \
+        '            padding-left: 100px;\n' \
+        '            padding-top: 175px;\n' \
+        '        }\n' \
+        '        @page {\n' \
+        '            size: A4;\n' \
         '        }\n' \
         '    </style>\n' \
         '</head>\n' \
-        '<body>\n' \
-        '    <div>\n' \
-       f'        {request.addr}\n' \
-        '    </div>\n' \
+        '<body class="A4">\n' \
+        '    <section class="sheet padding-10mm">\n' \
+        '        <div class="addr">\n' \
+       f'            {request.addr}\n' \
+        '        </div>\n' \
+        '    </section>\n' \
         '</body>\n' \
         '</html>'
     print(html)
