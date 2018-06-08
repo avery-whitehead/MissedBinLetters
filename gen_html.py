@@ -206,7 +206,7 @@ def create_html(request: Request) -> str:
         'text-decoration: underline;\n' \
         '}\n' \
         ' p {\n' \
-        'font-size: 11pt;\n' \
+        'font-size: 13pt;\n' \
         '}' \
         '.addr {\n' \
         'font-weight: bold;\n' \
@@ -222,6 +222,7 @@ def create_html(request: Request) -> str:
         '<body>\n' \
         '<section>\n' \
         '<div class="addr">\n' \
+       f'{request.occup}<br>\n' \
        f'{request.addr}\n' \
         '</div>\n' \
         '<div class="content">\n' \
@@ -311,7 +312,6 @@ def update_database(request: Request) -> str:
     except (pyodbc.DatabaseError, pyodbc.InterfaceError) as error:
         log_error('.\\missed_bin_letters.log', error)
 
-
 def log_error(log_path: str, error: Exception):
     """
     Writes exception messages to the log file and exits the program
@@ -339,7 +339,10 @@ if __name__ == '__main__':
         log_error('.\\missed_bin_letters.log', error)
     gw_requests = query_gw_requests()
     rec_requests = query_rec_requests()
-    for request in gw_requests + rec_requests:
+    requests = gw_requests + rec_requests
+    for request in requests:
         html = create_html(request)
         save_html(html, request)
     convert_html()
+    for request in requests:
+        update_database(request)
