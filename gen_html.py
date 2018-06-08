@@ -27,6 +27,7 @@ class Request():
         self.addr = addr
         self.case_ref = case_ref
 
+
 class GardenWasteRequest(Request):
     """
     Represents a request for more garden waste sacks
@@ -38,6 +39,7 @@ class GardenWasteRequest(Request):
         """
         super().__init__(occup, addr, case_ref)
         self.num_subs = num_subs
+
 
 class RecyclingRequest(Request):
     """
@@ -142,7 +144,7 @@ def save_and_convert_html(html: str, request: Request) -> str:
         (str): A string indicating success
     """
     try:
-        wkhtml_path = 'C:\\Program Files\\wkHTMLtoPDF\\bin\\wkhtmltopdf.exe'
+        wkhtml_path = '"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"'
         html_path = f'.\\htmls\\{request.case_ref}.html'
         pdf_path = f'.\\pdfs\\{request.case_ref}.pdf'
         with open(html_path, 'w+') as html_f:
@@ -158,8 +160,33 @@ def save_and_convert_html(html: str, request: Request) -> str:
             log.write(f'{SYSTIME} - {error}\n')
         sys.exit(1)
 
-def update_database():
-    pass
+def update_database(request: Request) -> str:
+    """
+    Runs the two UPDATE queries to keep track of which requests have been
+    processed
+    Args:
+        request (Request): The request in the database to update
+    Returns:
+        (str): A string indicating success
+    """
+    try:
+        with open('.\\gw_update.sql', 'r') as gw_update_f:
+            gw_update = gw_update_f.read()
+        with open('.\\rec_update.sql', 'r') as rec_update_f:
+            rec_update = rec_update_f.read()
+        cursor = CONN.cursor()
+        cursor.execute(gw_update)
+        cursor.execute(rec_update)
+        CONN.commit()
+        success_str = f'{SYSTIME} - Updated database for {request.case_ref}'
+        with open('.\\missed_bin_letters.log', 'a') as log:
+            log.write(f'{success_str}\n')
+        return success_str
+    except (pyodbc.DatabaseError, pyodbc.InterfaceError) as error:
+        with open('.\\missed_bin_letters', 'a') as log:
+            log.write(f'{SYSTIME} - {error}\n')
+        sys.exit(1)
+
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
@@ -172,7 +199,7 @@ if __name__ == '__main__':
             database=config['database'],
             uid=config['uid'],
             pwd=config['pwd'])
-    except pyodbc.InterfaceError as error:
+    except (pyodbc.DatabaseError, pyodbc.InterfaceError) as error:
         with open('.\\missed_bin_letters', 'a') as log:
             log.write(f'{SYSTIME} - {error}\n')
         sys.exit(1)
@@ -181,3 +208,4 @@ if __name__ == '__main__':
     for request in gw_requests + rec_requests:
         html = create_html(request)
         print(save_and_convert_html(html, request))
+        print(update_database(request))
