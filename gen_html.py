@@ -6,7 +6,9 @@ From the command line, run `py -3 gen_html.py`
 How it works:
 Generates an HTML file and uses wkhtmltopdf to convert it to a PDF
 """
+import os
 import glob
+import shutil
 import subprocess
 import datetime
 import sys
@@ -285,6 +287,17 @@ def convert_html() -> None:
                 print(args)
                 subprocess.call(args, shell=False)
     except (IOError, FileNotFoundError) as error:
+        log_error('.\\missed_bin_letters.log', error)
+
+def copy_pdfs() -> None:
+    """
+    Copies the PDFs to the correct folders on the network drive
+    """
+    try:
+        dest = 'Y:\\Groups and Services\\WaSS\\Route Optimisation\\missed bins\\sack letters'
+        shutil.copytree('.\\pdfs\\gw', f'{dest}\\gw')
+        shutil.copytree('.\\pdfs\\rec', f'{dest}\\rec')
+    except Exception as error:
         log_error('.\\missed_bin_letters.log', error)
 
 def update_database(request: Request) -> str:
