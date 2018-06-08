@@ -105,7 +105,6 @@ def create_html(request: Request) -> str:
         '<!DOCTYPE html>\n' \
         '<html>\n' \
         '<head>\n' \
-        '    <link rel="stylesheet" href=".\\paper.css">\n' \
         '    <style>\n' \
         '        body {\n' \
         '            font-family: sans-serif;\n' \
@@ -115,13 +114,10 @@ def create_html(request: Request) -> str:
         '            padding-left: 100px;\n' \
         '            padding-top: 175px;\n' \
         '        }\n' \
-        '        @page {\n' \
-        '            size: A4;\n' \
-        '        }\n' \
         '    </style>\n' \
         '</head>\n' \
-        '<body class="A4">\n' \
-        '    <section class="sheet padding-10mm">\n' \
+        '<body>\n' \
+        '    <section>\n' \
         '        <div class="addr">\n' \
        f'            {request.addr}\n' \
         '        </div>\n' \
