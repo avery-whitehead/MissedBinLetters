@@ -1,10 +1,12 @@
 """
 gen_html.py
-
-Fills in some HTML templates with address information to be sent out to
-people who have requested more waste sacks
-Uses wkhtmltopdf to convert the templates to an A4 PDF
+How to run:
+Install pyodbc version 4.0.22 or greater
+From the command line, run `py -3 gen_html.py`
+How it works:
+Generates an HTML file and uses wkhtmltopdf to convert it to a PDF
 """
+import subprocess
 import datetime
 import sys
 import json
@@ -47,7 +49,7 @@ class RecyclingRequest(Request):
         """
         super().__init__(occup, addr, case_ref)
 
-def query_gw_requests(conn: pyodbc.Connection) -> list:
+def query_gw_requests() -> list:
     """
     Queries the SQL database for the addresses of people who requested
     garden waste sacks
@@ -58,9 +60,9 @@ def query_gw_requests(conn: pyodbc.Connection) -> list:
         from the query
     """
     gw_requests = []
-    with open('.\\gw_address_info.sql') as gw_query_f:
+    with open('.\\gw_address_info.sql', 'r') as gw_query_f:
         gw_query = gw_query_f.read()
-    cursor = conn.cursor()
+    cursor = CONN.cursor()
     cursor.execute(gw_query)
     results = cursor.fetchall()
     for result in results:
@@ -71,7 +73,7 @@ def query_gw_requests(conn: pyodbc.Connection) -> list:
             result.num_subs))
     return gw_requests
 
-def query_rec_requests(conn: pyodbc.Connection) -> list:
+def query_rec_requests() -> list:
     """
     Queries the SQL database for the addresses of people who requested
     recycling sacks
@@ -82,9 +84,9 @@ def query_rec_requests(conn: pyodbc.Connection) -> list:
         the query
     """
     rec_requests = []
-    with open('.\\rec_address_info.sql') as rec_query_f:
+    with open('.\\rec_address_info.sql', 'r') as rec_query_f:
         rec_query = rec_query_f.read()
-    cursor = conn.cursor()
+    cursor = CONN.cursor()
     cursor.execute(rec_query)
     results = cursor.fetchall()
     for result in results:
@@ -129,20 +131,39 @@ def create_html(request: Request) -> str:
         '</html>'
     return html
 
-def save_and_convert_html(html: str) -> str:
+def save_and_convert_html(html: str, request: Request) -> str:
     """
     Writes the HTML to file, calls the wkhtmltopdf process and converts
     that file to a PDF
     Args:
         html (str): The HTML to write to file and later convert
+        request (Request): The Request this HTML was generated from
     Returns:
         (str): A string indicating success
     """
+    try:
+        wkhtml_path = 'C:\\Program Files\\wkHTMLtoPDF\\bin\\wkhtmltopdf.exe'
+        html_path = f'.\\htmls\\{request.case_ref}.html'
+        pdf_path = f'.\\pdfs\\{request.case_ref}.pdf'
+        with open(html_path, 'w+') as html_f:
+            html_f.write(html)
+        args = f'{wkhtml_path} {html_path} {pdf_path}'
+        subprocess.call(args, shell=False)
+        success_str = f'{SYSTIME} - Successfully created {pdf_path}'
+        with open('.\\missed_bin_letters.log', 'a') as log:
+            log.write(f'{success_str}\n')
+        return success_str
+    except (IOError, FileNotFoundError) as error:
+        with open('.\\missed_bin_letters.log', 'a') as log:
+            log.write(f'{SYSTIME} - {error}\n')
+        sys.exit(1)
+
+def update_database():
     pass
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-    with open ('.\\.config') as config_f:
+    with open ('.\\.config', 'r') as config_f:
         config = json.load(config_f)
     try:
         CONN = pyodbc.connect(
@@ -155,7 +176,8 @@ if __name__ == '__main__':
         with open('.\\missed_bin_letters', 'a') as log:
             log.write(f'{SYSTIME} - {error}\n')
         sys.exit(1)
-    gw_requests = query_gw_requests(CONN)
-    rec_requests = query_rec_requests(CONN)
-    for rec_request in rec_requests:
-        create_html(rec_request)
+    gw_requests = query_gw_requests()
+    rec_requests = query_rec_requests()
+    for request in gw_requests + rec_requests:
+        html = create_html(request)
+        print(save_and_convert_html(html, request))
