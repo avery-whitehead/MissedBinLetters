@@ -100,6 +100,8 @@ def create_html(request: Request) -> str:
     Args:
         request (Request): The GardenWasteRequest or RecyclingRequest
         to fill the template with
+    Returns:
+        (str): The HTLM template with the information filed in
     """
     html = '' \
         '<!DOCTYPE html>\n' \
@@ -113,6 +115,7 @@ def create_html(request: Request) -> str:
         '            font-weight: bold;\n' \
         '            padding-left: 100px;\n' \
         '            padding-top: 175px;\n' \
+        '            font-size: 22px;\n' \
         '        }\n' \
         '    </style>\n' \
         '</head>\n' \
@@ -124,7 +127,18 @@ def create_html(request: Request) -> str:
         '    </section>\n' \
         '</body>\n' \
         '</html>'
-    print(html)
+    return html
+
+def save_and_convert_html(html: str) -> str:
+    """
+    Writes the HTML to file, calls the wkhtmltopdf process and converts
+    that file to a PDF
+    Args:
+        html (str): The HTML to write to file and later convert
+    Returns:
+        (str): A string indicating success
+    """
+    pass
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')

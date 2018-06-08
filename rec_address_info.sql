@@ -11,11 +11,3 @@ JOIN wasscollections.dbo.MV_HDC_LLPG_ADDRESSES_CURRENT l
   	WHERE m.id NOT IN (12, 13, 17)
   	AND RecSacksRequested = 'yes' and m.RECYSacksLetterSent = 0
   	AND AddedDateTime < @rec_cutoff
-
-/*
-UPDATE HDC_AF_GW_Missed_Collections.dbo.Missed_Collections
-SET RECYSacksLetterSent = 1 
-WHERE m.id NOT IN (12, 13, 17)
-and RecSacksRequested = 'yes' and m.RECYSacksLetterSent = 0
-and AddedDateTime < @rec_cutoff
-*/

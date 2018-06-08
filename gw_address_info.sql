@@ -22,11 +22,3 @@ JOIN wasscollections.dbo.MV_HDC_LLPG_ADDRESSES_CURRENT l
   	AND GWSacksRequested = 'yes'
   	AND GWSacksLetterSent = 0
   	AND AddedDateTime < @gw_cutoff
-
-/*
-UPDATE HDC_AF_GW_Missed_Collections.dbo.Missed_Collections
-SET GWSacksLetterSent = 1
-WHERE m.id NOT IN (12, 13, 17)
-AND GWSacksRequested = 'yes' AND GWSacksLetterSent = 0
-and AddedDateTime < @gw_cutoff
-*/
