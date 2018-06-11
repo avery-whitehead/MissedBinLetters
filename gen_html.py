@@ -143,6 +143,10 @@ def create_html(request: Request) -> str:
         'ties provided.\n' \
         '</p>\n' \
         '<p>\n' \
+        'Please refer to your collection day postcard or visit ' \
+        'hambleton.gov.uk to check collection day details and for other ' \
+        'information.\n' \
+        '<p>\n' \
         'Thank you for your patience during this time.\n' \
         '</p>\n' \
         '<p>\n' \
@@ -188,7 +192,7 @@ def create_html(request: Request) -> str:
         '</p>\n' \
         '<p>\n' \
         'Please refer to your collection day postcard or visit ' \
-        'hambleton.go.uk to check collect day details and for other ' \
+        'hambleton.gov.uk to check collect day details and for other ' \
         'information.\n' \
         '</p>\n' \
         '<p>\n' \
