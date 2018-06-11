@@ -63,8 +63,6 @@ def query_gw_requests() -> list:
     """
     Queries the SQL database for the addresses of people who requested
     garden waste sacks
-    Args:
-        conn (pyodbc.Connection): The connection to the database
     Returns:
         A list of GardenWasteRequest objects containing the information
         from the query
@@ -87,8 +85,6 @@ def query_rec_requests() -> list:
     """
     Queries the SQL database for the addresses of people who requested
     recycling sacks
-    Args:
-        conn (pyodbc.Connection): The connection to the database
     Returns:
         A list of RecyclingRequest objects containing the information from
         the query
@@ -113,7 +109,7 @@ def create_html(request: Request) -> str:
         request (Request): The GardenWasteRequest or RecyclingRequest
         to fill the template with
     Returns:
-        (str): The HTLM template with the information filed in
+        (str): The HTML template with the information filed in
     """
     if isinstance(request, GardenWasteRequest):
         content = '' \
@@ -232,7 +228,6 @@ def create_html(request: Request) -> str:
         '</section>\n' \
         '</body>\n' \
         '</html>'
-
     return html
 
 def save_html(html: str, request: Request) -> None:

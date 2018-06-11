@@ -2,10 +2,16 @@
 
 Install pyodbc version 4.0.22 or greater
 
-From the command line, run:
+For a missed collection notification, run:
 
 ```console
 py -3 gen_html.py
+```
+
+For a change in rounds notification, run:
+
+```console
+py -3 new_rounds_gen_html.py
 ```
 
 ## How it works
