@@ -117,10 +117,10 @@ def create_html(request: Request) -> str:
     """
     if isinstance(request, GardenWasteRequest):
         content = '' \
-        '<h1>\n' \
-        'Garden Waste Letter\n' \
-        '</h1>\n' \
-        '<p>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
         'Further to your report of a missed garden waste bin collection. As ' \
         'you are most probably aware as of 4 June refuse, recycling and ' \
         'garden waste collections have been revised to improve the ' \
@@ -153,10 +153,10 @@ def create_html(request: Request) -> str:
         '</p>\n'
     elif isinstance(request, RecyclingRequest):
         content = '' \
-        '<h1>\n' \
-        'Recycling letter\n' \
-        '</h1>\n' \
-        '<p>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
         'Further to your report of a missed garden waste bin collection. As ' \
         'you are most probably aware as of 4 June refuse, recycling and ' \
         'garden waste collections have been revised to improve the ' \
@@ -214,7 +214,6 @@ def create_html(request: Request) -> str:
         'font-weight: bold;\n' \
         'padding-top: 70px;\n' \
         'font-size: 18px;\n' \
-        'page-break-after: always;\n' \
         '}\n' \
         '.content {\n' \
         'font-family: "Calibri"\n' \
@@ -294,10 +293,17 @@ def copy_pdfs() -> None:
     Copies the PDFs to the correct folders on the network drive
     """
     try:
-        dest = 'Y:\\Groups and Services\\WaSS\\Route Optimisation\\missed bins\\sack letters'
-        shutil.copytree('.\\pdfs\\gw', f'{dest}\\gw')
-        shutil.copytree('.\\pdfs\\rec', f'{dest}\\rec')
-    except Exception as error:
+        pdf_ds = ['.\\pdfs\\gw', '.\\pdfs\\rec']
+        dest_p = '\\\\wilma\\shared\\Groups and Services\\WaSS\\Route Optimisation\\missed bins\\sack letters'
+        for pdf_d in pdf_ds:
+            for d, _, files in os.walk(pdf_d):
+                for f in files:
+                    f_path = os.path.join(d, f)
+                    dest = f'{dest_p}\\{f_path}'
+                    # If the file doesn't exist
+                    if not os.path.isfile(dest):
+                        shutil.copy2(f_path, dest)
+    except WindowsError as error:
         log_error('.\\missed_bin_letters.log', error)
 
 def update_database(request: Request) -> str:
@@ -359,3 +365,4 @@ if __name__ == '__main__':
     convert_html()
     for request in requests:
         update_database(request)
+    copy_pdfs()
