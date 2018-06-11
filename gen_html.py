@@ -117,6 +117,7 @@ def create_html(request: Request) -> str:
         '<br>\n' \
         '<br>\n' \
         '<br>\n' \
+        '<p>\n' \
         'Further to your report of a missed garden waste bin collection. As ' \
         'you are most probably aware as of 4 June refuse, recycling and ' \
         'garden waste collections have been revised to improve the ' \
@@ -153,12 +154,19 @@ def create_html(request: Request) -> str:
         '<br>\n' \
         '<br>\n' \
         '<br>\n' \
-        'Further to your report of a missed garden waste bin collection. As ' \
+        '<p>\n' \
+        'Further to your report of a missed recycling bin collection. As ' \
         'you are most probably aware as of 4 June refuse, recycling and ' \
         'garden waste collections have been revised to improve the ' \
         'efficiency of the service.  These changes involve new collection ' \
         'routes with different drivers and have resulted in occasional ' \
         'missed collections.\n' \
+        '</p>\n' \
+        '<p>\n' \
+        'Unfortunately we are unable to return to collect your bin(s), ' \
+        'however please find enclosed two clear recycling sacks which can ' \
+        'be used to contain extra recycling which can’t fit into your blue ' \
+        'lidded bin.\n ' \
         '</p>\n' \
         '<p>\n' \
         'Please ensure sacks are tied, intact and not overflowing.\n' \
@@ -361,3 +369,5 @@ if __name__ == '__main__':
     for request in requests:
         update_database(request)
     copy_pdfs()
+    with open('.\\missed_bin_letters.log', 'a') as log:
+        log.write(f'{SYSTIME}\n')
