@@ -4,6 +4,7 @@ SELECT
 	'The Occupier' AS occupier,
 	REPLACE(REPLACE(l.ADDRESS_BLOCK, 'North Yorkshire' + CHAR(13) + CHAR(10), ''), CHAR(13) + CHAR(10), '<br>') AS address,
 	case_ref,
+	ADDRESS_STR as addr_str,
 	GWSacksRequested AS gw_sacks_requested,
 	GWLics.num_subs
 FROM HDC_AF_GW_Missed_Collections.dbo.Missed_Collections m

@@ -19,15 +19,17 @@ class Request():
     """
     Parent class for GardenWasteRequest and RecyclingRequest
     """
-    def __init__(self, occup: str, addr: str, case_ref: str):
+    def __init__(self, occup: str, addr: str, addr_str: str, case_ref: str):
         """
         Args:
             occup (str): The occupier of the property
             addr (str): The address of the property
+            addr_str (str): The address with commas instead of <br> tags
             case_ref (str): The case reference of the request
         """
         self.occup = occup
         self.addr = addr
+        self.addr_str = addr_str
         self.case_ref = case_ref
 
 
@@ -35,14 +37,14 @@ class GardenWasteRequest(Request):
     """
     Represents a request for more garden waste sacks
     """
-    def __init__(self, occup: str, addr: str, case_ref: str, num_subs: str):
+    def __init__(self, occup: str, addr: str, addr_str: str, case_ref: str, num_subs: str):
         """
         Initialises the different attributes between GardenWasteRequest and
         Request
         Args:
             num_subs (str): The number of subscriptions the property has
         """
-        super().__init__(occup, addr, case_ref)
+        super().__init__(occup, addr, addr_str, case_ref)
         self.num_subs = num_subs
         self.req_type = 'gw'
 
@@ -51,12 +53,12 @@ class RecyclingRequest(Request):
     """
     Represents a request for more recycling sacks
     """
-    def __init__(self, occup: str, addr: str, case_ref: str):
+    def __init__(self, occup: str, addr: str, addr_str: str, case_ref: str):
         """
         Initialises the different attributes between RecyclingRequest and
         Request
         """
-        super().__init__(occup, addr, case_ref)
+        super().__init__(occup, addr, addr_str, case_ref)
         self.req_type = 'rec'
 
 def query_gw_requests() -> list:
@@ -77,6 +79,7 @@ def query_gw_requests() -> list:
         gw_requests.append(GardenWasteRequest(
             result.occupier,
             result.address,
+            result.addr_str,
             result.case_ref,
             result.num_subs))
     return gw_requests
@@ -99,6 +102,7 @@ def query_rec_requests() -> list:
         rec_requests.append(RecyclingRequest(
             result.occupier,
             result.address,
+            result.addr_str,
             result.case_ref))
     return rec_requests
 
@@ -248,17 +252,16 @@ def save_html(html: str, request: Request) -> None:
     """
     try:
         dir_path = f'.\\htmls\\{request.req_type}'
-        html_path = f'{dir_path}\\{request.case_ref}-1.html'
+        html_path = f'{dir_path}\\{request.case_ref}-{request.addr_str}-1.html'
         with open(html_path, 'w+') as html_f:
             html_f.write(html)
         success_str = f'{SYSTIME} - Successfully saved {html_path}'
-        print(success_str)
         with open('.\\missed_bin_letters.log', 'a') as log:
             log.write(f'{success_str}\n')
         # If there is more than one license, create multiple letters
         if isinstance(request, GardenWasteRequest):
             for i in range(1, int(request.num_subs)):
-                html_path = f'{dir_path}\\{request.case_ref}-{i + 1}.html'
+                html_path = f'{dir_path}\\{request.case_ref}-{request.addr_str}-{i + 1}.html'
                 with open(html_path, 'w+') as html_f:
                     html_f.write(html)
             success_str = f'{SYSTIME} - Successfully saved {html_path}'
@@ -285,7 +288,7 @@ def convert_html() -> None:
                     case_ref = html[12:-5]
                     pdf = f'.\\pdfs\\rec\\{case_ref}.pdf'
                 flags = '-B 25.4mm -L 25.4mm -R 25.4mm -T 25.4mm'
-                args = f'{exe} --disable-smart-shrinking {flags} {html} {pdf}'
+                args = f'{exe} --disable-smart-shrinking {flags} "{html}" "{pdf}"'
                 print(args)
                 subprocess.call(args, shell=False)
     except (IOError, FileNotFoundError) as error:
