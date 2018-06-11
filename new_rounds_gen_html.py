@@ -61,6 +61,7 @@ def create_html(change: CollectionChange) -> str:
     Returns:
         (str): The HTML template with the information filed in
     """
+    date = datetime.datetime.now().strftime('%d %B %Y')
     html = '' \
         '<!DOCTYPE html>\n' \
         '<html>\n' \
@@ -86,6 +87,9 @@ def create_html(change: CollectionChange) -> str:
         '.content {\n' \
         'font-family: "Calibri"\n' \
         '}\n' \
+        '.header {\n' \
+        'text-decoration: underline;\n' \
+        '}\n' \
         '</style>\n' \
         '</head>\n' \
         '<body>\n' \
@@ -94,6 +98,32 @@ def create_html(change: CollectionChange) -> str:
        f'{change.occup}<br>\n' \
        f'{change.addr}\n' \
         '</div>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<div class="content">\n' \
+        '<p>\n' \
+        f'{date}\n' \
+        '</p>\n' \
+        '<p>\n' \
+        'Dear Sir/Madam\n' \
+        '</p>\n' \
+        '<p class="header>\n' \
+        '<strong>Waste and Recycling Collections</strong>\n' \
+        '</p>\n' \
+        '<p>\n' \
+        'Earlier this month we implemented changes to our collections for ' \
+        'waste and recycling which meant changes for your home. ' \
+        'Unfortunately we have identified further amendments needed to ' \
+        'ensure the most efficient service delivery for our residents. ' \
+        'This only affects a small number of properties – but it includes ' \
+        'your home.\n' \
+        '<br>\n' \
+        'Below are the details of the new fortnightly collection ' \
+        'arrangements for your property, which come into effect from ' \
+        'Monday June 18:\n' \
+        '</p>\n' \
         '</body>\n' \
         '</html>'
     return html
@@ -101,6 +131,8 @@ def create_html(change: CollectionChange) -> str:
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
+    print(type(SYSTIME))
+    print(SYSTIME)
     with open ('.\\.config_chngs', 'r') as config_f:
         config = json.load(config_f)
     try:
