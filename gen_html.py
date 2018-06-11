@@ -118,23 +118,23 @@ def create_html(request: Request) -> str:
         '<br>\n' \
         '<br>\n' \
         '<p>\n' \
-        'Further to your report of a missed garden waste bin collection. As ' \
-        'you are most probably aware as of 4 June refuse, recycling and ' \
-        'garden waste collections have been revised to improve the ' \
-        'efficiency of the service.  These changes involve new collection ' \
-        'routes with different drivers and have resulted in occasional ' \
-        'missed collections.\n' \
+        'Further to your report of a missed garden waste bin collection, ' \
+        'you are probably aware that from 4 June refuse, recycling and ' \
+        'garden waste collections were revised to improve the efficiency ' \
+        'of the service. These changes involve new collection routes with ' \
+        'different drivers and have resulted in occasional missed ' \
+        'collections.\n' \
         '</p>\n' \
         '<p>\n' \
         'Unfortunately we are unable to return to collect your bin(s), ' \
-        'however please find enclosed 3 sacks for your garden waste. ' \
-        'Please affix 1 of the enclosed stickers to each sack so that the ' \
-        'licence can be seen by the collection crews.  Please ensure sacks ' \
-        'are tied intact and not overflowing.\n' \
+        'however please find enclosed three sacks for your garden waste. ' \
+        'Please place one of the enclosed stickers on each sack so that the ' \
+        'licence can be seen by the collection crews. Please ensure sacks ' \
+        'are tied, intact and not overflowing.\n' \ 
         '</p>\n' \
         '<p>\n' \
         'Please present filled sacks alongside your green wheeled bin by ' \
-        '06:00 on your collection day. Please ensure that your green waste ' \
+        '6am on your collection day. Please ensure that your green waste ' \
         'bin(s) correctly display current garden waste licences using the ' \
         'ties provided.\n' \
         '</p>\n' \
@@ -158,7 +158,7 @@ def create_html(request: Request) -> str:
         'Further to your report of a missed recycling bin collection. As ' \
         'you are most probably aware as of 4 June refuse, recycling and ' \
         'garden waste collections have been revised to improve the ' \
-        'efficiency of the service.  These changes involve new collection ' \
+        'efficiency of the service. These changes involve new collection ' \
         'routes with different drivers and have resulted in occasional ' \
         'missed collections.\n' \
         '</p>\n' \
