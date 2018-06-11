@@ -130,7 +130,7 @@ def create_html(request: Request) -> str:
         'however please find enclosed three sacks for your garden waste. ' \
         'Please place one of the enclosed stickers on each sack so that the ' \
         'licence can be seen by the collection crews. Please ensure sacks ' \
-        'are tied, intact and not overflowing.\n' \ 
+        'are tied, intact and not overflowing.\n' \
         '</p>\n' \
         '<p>\n' \
         'Please present filled sacks alongside your green wheeled bin by ' \
