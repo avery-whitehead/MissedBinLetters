@@ -90,6 +90,10 @@ def create_html(change: CollectionChange) -> str:
         '.header {\n' \
         'text-decoration: underline;\n' \
         '}\n' \
+        '.footer {\n' \
+        'font-size: 9pt;\n' \
+        'color: #808080;\n' \
+        '}\n' \
         '</style>\n' \
         '</head>\n' \
         '<body>\n' \
@@ -109,7 +113,7 @@ def create_html(change: CollectionChange) -> str:
         '<p>\n' \
         'Dear Sir/Madam\n' \
         '</p>\n' \
-        '<p class="header>\n' \
+        '<p class="header">\n' \
         '<strong>Waste and Recycling Collections</strong>\n' \
         '</p>\n' \
         '<p>\n' \
@@ -123,6 +127,45 @@ def create_html(change: CollectionChange) -> str:
         'Below are the details of the new fortnightly collection ' \
         'arrangements for your property, which come into effect from ' \
         'Monday June 18:\n' \
+        '</p>\n' \
+        '</body>\n' \
+        '<p>\n' \
+        'TABLE\n' \
+        '</p>\n' \
+        '<p>\n' \
+        'Please put your containers at your collection point by 6am.\n' \
+        '</p>\n' \
+        '<p>\n' \
+        'I would like to apologise for any inconvenience caused as a ' \
+        'result of these further changes.\n' \
+        '</p>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<br>\n' \
+        '<p>\n' \
+        'Gary Brown\n' \
+        '<br>\n' \
+        '<span class="header">\n' \
+        '<strong>Waste & Street Scene Manager</strong>\n' \
+        '</span>\n' \
+        '<br>\n' \
+        'WasteandStreetScene@hambleton.gov.uk\n' \
+        '</p>\n' \
+        '<p class="footer">\n' \
+        '<span style="color: #9EB4D0">\n' \
+        'Hambleton District Council\n' \
+        '</span>\n' \
+        '<br>\n' \
+        'Waste and Street Scene, Bridge End House\n' \
+        '<br>\n' \
+        'Darlington Road, Northallerton, North Yorkshire DL6 2PL\n' \
+        '</p>\n' \
+        '<p class="footer" style="font-size: 8pt">\n' \
+        'Some of our calls are recorded. For further information visit our ' \
+        'website www.hambleton.gov.uk to view the Call Recording Policy\n' \
         '</p>\n' \
         '</body>\n' \
         '</html>'
