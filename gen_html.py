@@ -8,7 +8,6 @@ Generates an HTML file and uses wkhtmltopdf to convert it to a PDF
 """
 import os
 import glob
-import shutil
 import subprocess
 import datetime
 import sys
@@ -37,7 +36,13 @@ class GardenWasteRequest(Request):
     """
     Represents a request for more garden waste sacks
     """
-    def __init__(self, occup: str, addr: str, addr_str: str, case_ref: str, num_subs: str):
+    def __init__(
+            self,
+            occup: str,
+            addr: str,
+            addr_str: str,
+            case_ref: str,
+            num_subs: str):
         """
         Initialises the different attributes between GardenWasteRequest and
         Request
@@ -265,7 +270,8 @@ def save_html(html: str, request: Request) -> None:
         # If there is more than one license, create multiple letters
         if isinstance(request, GardenWasteRequest):
             for i in range(1, int(request.num_subs)):
-                html_path = f'{dir_path}\\{request.case_ref}-{request.addr_str}-{i + 1}.html'
+                html_f = f'{request.case_ref}-{request.addr_str}-{i + 1}.html'
+                html_path = f'{dir_path}\\{html_f}'
                 with open(html_path, 'w+') as html_f:
                     html_f.write(html)
             success_str = f'{SYSTIME} - Successfully saved {html_path}'
@@ -287,32 +293,34 @@ def convert_html() -> None:
             for html in htmls:
                 if html_dir == '.\\htmls\\gw\\*':
                     case_ref = html[11:-5]
-                    pdf = f'.\\pdfs\\gw\\{case_ref}.pdf'
+                    # Moves PDFs directly to Y: drive
+                    pdf = '\\\\wilma\\shared\\Groups and Services\\WaSS\\' \
+                    'Route Optimisation\\missed bins\\sack letters\\pdfs\\' \
+                    f'gw\\{case_ref}.pdf'
                 elif html_dir == '.\\htmls\\rec\\*':
                     case_ref = html[12:-5]
-                    pdf = f'.\\pdfs\\rec\\{case_ref}.pdf'
-                flags = '-B 25.4mm -L 25.4mm -R 25.4mm -T 25.4mm'
-                args = f'{exe} --disable-smart-shrinking {flags} "{html}" "{pdf}"'
+                    pdf = '\\\\wilma\\shared\\Groups and Services\\WaSS\\' \
+                    'Route Optimisation\\missed bins\\sack letters\\pdfs\\' \
+                    f'rec\\{case_ref}.pdf'
+                flags = '--disable-smart-shrinking ' \
+                '-B 25.4mm -L 25.4mm -R 25.4mm -T 25.4mm'
+                args = f'{exe} {flags} "{html}" "{pdf}"'
                 print(args)
                 subprocess.call(args, shell=False)
     except (IOError, FileNotFoundError) as error:
         log_error('.\\missed_bin_letters.log', error)
 
-def copy_pdfs() -> None:
+def remove_htmls() -> None:
     """
-    Copies the PDFs to the correct folders on the network drive
+    Removes the HTML files so they don't accidentally get reprocessed
     """
     try:
-        pdf_ds = ['.\\pdfs\\gw', '.\\pdfs\\rec']
-        dest_p = '\\\\wilma\\shared\\Groups and Services\\WaSS\\Route Optimisation\\missed bins\\sack letters'
-        for pdf_d in pdf_ds:
-            for d, _, files in os.walk(pdf_d):
+        html_ds = ['.\\htmls\\gw', '.\\htmls\\rec']
+        for html_d in html_ds:
+            for d, _, files in os.walk(html_d):
                 for f in files:
                     f_path = os.path.join(d, f)
-                    dest = f'{dest_p}\\{f_path}'
-                    # If the file doesn't exist
-                    if not os.path.isfile(dest):
-                        shutil.copy2(f_path, dest)
+                    os.unlink(f_path)
     except WindowsError as error:
         log_error('.\\missed_bin_letters.log', error)
 
@@ -375,6 +383,6 @@ if __name__ == '__main__':
     convert_html()
     for request in requests:
         update_database(request)
-    copy_pdfs()
+    remove_htmls()
     with open('.\\missed_bin_letters.log', 'a') as log:
         log.write(f'{SYSTIME}\n')
