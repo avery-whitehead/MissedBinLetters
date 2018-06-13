@@ -8,7 +8,6 @@ Generates an HTML file and uses wkhtmltopdf to convert it to a PDF
 Contains changes to a round
 """
 import datetime
-import sys
 import json
 import pyodbc
 
@@ -25,6 +24,8 @@ class CollectionChange():
         """
         self.occup = occup
         self.addr = addr
+        # Used for display on the letter
+        self.addr_str = addr.replace(', ', '<br>')
         self.uprn = uprn
 
 
@@ -36,7 +37,6 @@ def query_changes() -> list:
     changes = []
     with open('.\\changes_info.sql', 'r') as changes_query_f:
         changes_query = changes_query_f.read()
-    print(changes_query)
     cursor = CONN.cursor()
     cursor.execute(changes_query)
     results = cursor.fetchall()
@@ -46,17 +46,6 @@ def query_changes() -> list:
             result.addr,
             result.uprn))
     return changes
-
-def log_error(log_path: str, error: Exception):
-    """
-    Writes exception messages to the log file and exits the program
-    Args:
-        log_path (str): The path of the log file to write to
-        error (Exception): The error message given by an exception
-    """
-    with open(log_path, 'a') as log:
-        log.write(f'{SYSTIME} - {error}\n')
-    sys.exit(1)
 
 def create_html(change: CollectionChange) -> str:
     """
@@ -126,7 +115,7 @@ def create_html(change: CollectionChange) -> str:
         '<section>\n' \
         '<div class="addr">\n' \
        f'{change.occup}<br>\n' \
-       f'{change.addr}\n' \
+       f'{change.addr_str}\n' \
         '</div>\n' \
         '<br>\n' \
         '<br>\n' \
@@ -156,7 +145,7 @@ def create_html(change: CollectionChange) -> str:
         '</p>\n' \
         '</body>\n' \
         '<p>\n' \
-        'TABLE\n' \
+       f'{get_html_table(change.uprn)}\n' \
         '</p>\n' \
         '<p>\n' \
         'Please put your containers at your collection point by 6am.\n' \
@@ -197,24 +186,48 @@ def create_html(change: CollectionChange) -> str:
         '</html>'
     return html
 
-def get_table_html():
-    pass
+def get_html_table(uprn: str) -> str:
+    """
+    Queries the SQL database to return the HTML table containing the
+    details of a collection change
+    Args:
+        uprn (str): The UPRN of the property to get the changes for
+    Returns:
+        (str): The HTML table with the change details
+    """
+    with open('.\\changes_html_table.sql', 'r') as html_query_f:
+        html_query = html_query_f.read()
+    cursor = CONN.cursor()
+    cursor.execute(""" SET NOCOUNT ON; """ + html_query, uprn)
+    return cursor.fetchone().html
+
+def save_html(html: str, change: CollectionChange) -> str:
+    """
+    Writes the HTML to file to be converted later
+    Args:
+        html (str): The HTML to write to file and later convert
+        change (CollectionChange): The CollectionChange this HTML was
+        generated from
+    Returns:
+        A string denoting success
+    """
+    dir_path = f'.\\htmls\\changes'
+    file_path = f'{dir_path}\\{change.uprn}-{change.addr}.html'
+    with open(file_path, 'w+') as html_f:
+        html_f.write(html)
+    return f'Saved {file_path}'
+
 
 if __name__ == '__main__':
-    SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-    print(type(SYSTIME))
-    print(SYSTIME)
     with open ('.\\.config_chngs', 'r') as config_f:
         config = json.load(config_f)
-    try:
-        CONN = pyodbc.connect(
-            driver=config['driver'],
-            server=config['server'],
-            database=config['database'],
-            uid=config['uid'],
-            pwd=config['pwd'])
-    except (pyodbc.DatabaseError, pyodbc.InterfaceError) as error:
-        log_error('.\\missed_bin_letters.log', error)
+    CONN = pyodbc.connect(
+        driver=config['driver'],
+        server=config['server'],
+        database=config['database'],
+        uid=config['uid'],
+        pwd=config['pwd'])
     changes = query_changes()
     for change in changes:
-        print(change.uprn)
+        html = create_html(change)
+        print(save_html(html, change))

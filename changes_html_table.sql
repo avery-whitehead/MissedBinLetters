@@ -1,5 +1,5 @@
 DECLARE @html nvarchar(MAX)
-DECLARE @uprn varchar(12) = '200003299567'
+DECLARE @uprn varchar(12) = ?
 DECLARE @backdatedBy varchar(4) = '-1'
 DECLARE @text varchar(4) = 'no'
 DECLARE @numWeeks int = 1
@@ -106,4 +106,4 @@ SELECT
 			'500px', @tableHeight),
 		'<div class="table"', '<div id="collections-table" class="table ' + @pccCSS + '"'),
 	'NEWRecycling', 'Recycling')
-AS pccTableHTML
+AS html
