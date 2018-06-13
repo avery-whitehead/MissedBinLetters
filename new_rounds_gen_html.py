@@ -57,7 +57,7 @@ def create_html(change: CollectionChange) -> str:
     Returns:
         (str): The HTML template with the information filed in
     """
-    date = datetime.datetime.now().strftime('%d %B %Y')
+    date = datetime.datetime.now().strftime('%A %d %B %Y')
     html = '' \
         '<!DOCTYPE html>\n' \
         '<html>\n' \
@@ -97,18 +97,20 @@ def create_html(change: CollectionChange) -> str:
         '.hdc-td-greenborder {\n' \
         'font-size: 12px;\n' \
         '}\n' \
-        '.collections-table {\n' \
+        '#collections-table {\n' \
         'color: #444444;\n' \
-        'line-height: 14px;\n' \
         'margin: 0 auto;\n' \
         '}\n' \
         '.table {\n' \
-        'width: 800px;\n' \
+        'width: 450px;\n' \
         'text-align: center;\n' \
         'border-collapse: collapse;\n' \
         '}\n' \
         '.table-striped tbody tr:nth-of-type(odd) {\n' \
         'background-color: #FFFFFF;\n' \
+        '}\n' \
+        'tr {\n' \
+        'border-bottom: 1px solid #C8C8C8;\n' \
         '}\n' \
         '</style>\n' \
         '</head>\n' \
@@ -154,8 +156,8 @@ def create_html(change: CollectionChange) -> str:
         '<p>\n' \
         'Gary Brown\n' \
         '<br>\n' \
-        '<span class="header">\n' \
-        '<strong>Waste & Street Scene Manager</strong>\n' \
+        '<span>\n' \
+        'Waste & Street Scene Manager\n' \
         '</span>\n' \
         '<br>\n' \
         'WasteandStreetScene@hambleton.gov.uk\n' \
