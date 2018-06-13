@@ -7,6 +7,8 @@ How it works:
 Generates an HTML file and uses wkhtmltopdf to convert it to a PDF
 Contains changes to a round
 """
+import glob
+import subprocess
 import datetime
 import json
 import pyodbc
@@ -60,7 +62,6 @@ def create_html(change: CollectionChange) -> str:
         '<!DOCTYPE html>\n' \
         '<html>\n' \
         '<head>\n' \
-        '<link rel="stylesheet" href="./bootstrap.min.css">\n' \
         '<style>\n' \
         'body {\n' \
         'font-family: "Arial", sans-serif;\n' \
@@ -72,11 +73,11 @@ def create_html(change: CollectionChange) -> str:
         'text-decoration: underline;\n' \
         '}\n' \
         ' p {\n' \
-        'font-size: 13pt;\n' \
+        'font-size: 11pt;\n' \
         '}' \
         '.addr {\n' \
         'font-weight: bold;\n' \
-        'padding-top: 70px;\n' \
+        'padding-top: 90px;\n' \
         'font-size: 18px;\n' \
         '}\n' \
         '.content {\n' \
@@ -102,7 +103,7 @@ def create_html(change: CollectionChange) -> str:
         'margin: 0 auto;\n' \
         '}\n' \
         '.table {\n' \
-        'width: 66%;\n' \
+        'width: 800px;\n' \
         'text-align: center;\n' \
         'border-collapse: collapse;\n' \
         '}\n' \
@@ -117,9 +118,6 @@ def create_html(change: CollectionChange) -> str:
        f'{change.occup}<br>\n' \
        f'{change.addr_str}\n' \
         '</div>\n' \
-        '<br>\n' \
-        '<br>\n' \
-        '<br>\n' \
         '<br>\n' \
         '<div class="content">\n' \
         '<p>\n' \
@@ -143,22 +141,15 @@ def create_html(change: CollectionChange) -> str:
         'arrangements for your property, which come into effect from ' \
         'Monday June 18:\n' \
         '</p>\n' \
-        '</body>\n' \
-        '<p>\n' \
        f'{get_html_table(change.uprn)}\n' \
-        '</p>\n' \
         '<p>\n' \
+        '<br>\n' \
         'Please put your containers at your collection point by 6am.\n' \
         '</p>\n' \
         '<p>\n' \
         'I would like to apologise for any inconvenience caused as a ' \
         'result of these further changes.\n' \
         '</p>\n' \
-        '<br>\n' \
-        '<br>\n' \
-        '<br>\n' \
-        '<br>\n' \
-        '<br>\n' \
         '<br>\n' \
         '<p>\n' \
         'Gary Brown\n' \
@@ -177,10 +168,11 @@ def create_html(change: CollectionChange) -> str:
         'Waste and Street Scene, Bridge End House\n' \
         '<br>\n' \
         'Darlington Road, Northallerton, North Yorkshire DL6 2PL\n' \
-        '</p>\n' \
-        '<p class="footer" style="font-size: 8pt">\n' \
+        '<br>\n' \
+        '<span style="font-size: 7pt">\n' \
         'Some of our calls are recorded. For further information visit our ' \
         'website www.hambleton.gov.uk to view the Call Recording Policy\n' \
+        '</span>\n' \
         '</p>\n' \
         '</body>\n' \
         '</html>'
@@ -217,6 +209,28 @@ def save_html(html: str, change: CollectionChange) -> str:
         html_f.write(html)
     return f'Saved {file_path}'
 
+def convert_html() -> str:
+    """
+    Converts each HTML file to a PDF using wkhtmltopdf
+    Returns:
+        A string denoting success
+    """
+    exe = '"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"'
+    htmls = glob.glob('.\\htmls\\changes\\*')
+    count = 0
+    for html in htmls:
+        out_f = html[16:-5]
+        pdf = f'.\\pdfs\\changes\\{out_f}.pdf'
+        flags = '--proxy 127.0.0.1:3128 ' \
+        '--disable-smart-shrinking ' \
+        '-B 25.4mm -L 25.4mm -R 25.4mm -T 25.4mm'
+        args = f'{exe} {flags} "{html}" "{pdf}"'
+        print(args)
+        subprocess.call(args, shell=False)
+        print(f'Converted {pdf}')
+        count += 1
+    return f'Saved {count}/{len(htmls)} PDFs'
+
 
 if __name__ == '__main__':
     with open ('.\\.config_chngs', 'r') as config_f:
@@ -231,3 +245,4 @@ if __name__ == '__main__':
     for change in changes:
         html = create_html(change)
         print(save_html(html, change))
+    print(convert_html())

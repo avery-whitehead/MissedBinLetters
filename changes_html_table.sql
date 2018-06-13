@@ -3,7 +3,7 @@ DECLARE @uprn varchar(12) = ?
 DECLARE @backdatedBy varchar(4) = '-1'
 DECLARE @text varchar(4) = 'no'
 DECLARE @numWeeks int = 1
-DECLARE @tableHeight varchar(6) = '250px'
+DECLARE @tableHeight varchar(6) = '180px'
 DECLARE @pccCSS varchar(max) = ''
 DECLARE @datelimit date = '2018-11-30'
 
@@ -95,15 +95,19 @@ SELECT
 								REPLACE(
 									REPLACE(
 										REPLACE(
-											REPLACE(@html, '|^', '<'),
-										'|$', '>'),
-									'|/', '/'),
-								'<td xsi:nil="true"/>', '<td>'),
-							'<td>', '<td id="licences" class="hdc-td-greenborder" style="width:' + @tableRowWidth + '%;">'),
-						'<tr xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">', '<tr>'),
-					'<th>', '<th class="hdc-td-greenborder">'),
-				'WeekCommencing', 'Week Starting'),
-			'500px', @tableHeight),
-		'<div class="table"', '<div id="collections-table" class="table ' + @pccCSS + '"'),
-	'NEWRecycling', 'Recycling')
+											REPLACE(
+												REPLACE(
+													REPLACE(@html, '|^', '<'),
+												'|$', '>'),
+											'|/', '/'),
+										'<td xsi:nil="true"/>', '<td>'),
+									'<td>', '<td id="licences" class="hdc-td-greenborder" style="width:' + @tableRowWidth + '%;">'),
+								'<tr xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">', '<tr>'),
+							'<th>', '<th class="hdc-td-greenborder">'),
+						'WeekCommencing', 'Week Starting'),
+					'500px', @tableHeight),
+				'<div class="table"', '<div id="collections-table" class="table ' + @pccCSS + '"'),
+			'NEWRecycling', 'Recycling'),
+		'https://', 'http://'),
+		'class="table" style="text-align: center;border-collapse:collapse;', 'class="table" style="text-align: center;border-collapse: collapse; margin-bottom: 20px;')
 AS html
