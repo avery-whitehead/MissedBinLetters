@@ -16,16 +16,16 @@ class CollectionChange():
     """
     Represents a generic change in collection arrangements
     """
-    def __init__(self, occup: str, addr: str, case_ref: str):
+    def __init__(self, occup: str, addr: str, uprn: str):
         """
         Args:
             occup (str): The occupier of the property
             addr (str): The address of the property
-            case_ref (str): The case reference of the request
+            uprn (str): The UPRN of the property
         """
         self.occup = occup
         self.addr = addr
-        self.case_ref = case_ref
+        self.uprn = uprn
 
 
 def query_changes() -> list:
@@ -36,10 +36,15 @@ def query_changes() -> list:
     changes = []
     with open('.\\changes_info.sql', 'r') as changes_query_f:
         changes_query = changes_query_f.read()
+    print(changes_query)
     cursor = CONN.cursor()
     cursor.execute(changes_query)
     results = cursor.fetchall()
-    # TODO: Create a CollectionChange object from the results
+    for result in results:
+        changes.append(CollectionChange(
+            result.occup,
+            result.addr,
+            result.uprn))
     return changes
 
 def log_error(log_path: str, error: Exception):
@@ -66,9 +71,10 @@ def create_html(change: CollectionChange) -> str:
         '<!DOCTYPE html>\n' \
         '<html>\n' \
         '<head>\n' \
+        '<link rel="stylesheet" href="./bootstrap.min.css">\n' \
         '<style>\n' \
         'body {\n' \
-        'font-family: sans-serif;\n' \
+        'font-family: "Arial", sans-serif;\n' \
         '}\n' \
         'h1 {\n' \
         'font-weight: normal;\n' \
@@ -93,6 +99,26 @@ def create_html(change: CollectionChange) -> str:
         '.footer {\n' \
         'font-size: 9pt;\n' \
         'color: #808080;\n' \
+        '}\n' \
+        'img {\n' \
+        'max-width: 100%;\n' \
+        'max-height: 75px;\n' \
+        '}\n' \
+        '.hdc-td-greenborder {\n' \
+        'font-size: 12px;\n' \
+        '}\n' \
+        '.collections-table {\n' \
+        'color: #444444;\n' \
+        'line-height: 14px;\n' \
+        'margin: 0 auto;\n' \
+        '}\n' \
+        '.table {\n' \
+        'width: 66%;\n' \
+        'text-align: center;\n' \
+        'border-collapse: collapse;\n' \
+        '}\n' \
+        '.table-striped tbody tr:nth-of-type(odd) {\n' \
+        'background-color: #FFFFFF;\n' \
         '}\n' \
         '</style>\n' \
         '</head>\n' \
@@ -171,6 +197,8 @@ def create_html(change: CollectionChange) -> str:
         '</html>'
     return html
 
+def get_table_html():
+    pass
 
 if __name__ == '__main__':
     SYSTIME = datetime.datetime.now().strftime('%d-%b-%Y %H:%M:%S')
@@ -188,3 +216,5 @@ if __name__ == '__main__':
     except (pyodbc.DatabaseError, pyodbc.InterfaceError) as error:
         log_error('.\\missed_bin_letters.log', error)
     changes = query_changes()
+    for change in changes:
+        print(change.uprn)

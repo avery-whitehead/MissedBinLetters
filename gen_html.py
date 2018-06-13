@@ -274,10 +274,10 @@ def save_html(html: str, request: Request) -> None:
                 html_path = f'{dir_path}\\{html_f}'
                 with open(html_path, 'w+') as html_f:
                     html_f.write(html)
-            success_str = f'{SYSTIME} - Successfully saved {html_path}'
-            print(success_str)
-            with open('.\\missed_bin_letters.log', 'a') as log:
-                log.write(f'{success_str}\n')
+                success_str = f'{SYSTIME} - Successfully saved {html_path}'
+                print(success_str)
+                with open('.\\missed_bin_letters.log', 'a') as log:
+                    log.write(f'{success_str}\n')
     except (IOError, FileNotFoundError) as error:
         log_error('.\\missed_bin_letters.log', error)
 
