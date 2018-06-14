@@ -141,7 +141,7 @@ def create_html(change: CollectionChange) -> str:
         '<br>\n' \
         'Below are the details of the new fortnightly collection ' \
         'arrangements for your property, which come into effect from ' \
-        'Monday June 18:\n' \
+        'Monday 18 June 2018:\n' \
         '</p>\n' \
        f'{get_html_table(change.uprn)}\n' \
         '<p>\n' \
@@ -225,7 +225,7 @@ def convert_html() -> str:
         pdf = f'.\\pdfs\\changes\\{out_f}.pdf'
         flags = '--proxy 127.0.0.1:3128 ' \
         '--disable-smart-shrinking ' \
-        '-B 25.4mm -L 25.4mm -R 25.4mm -T 25.4mm'
+        '-B 0mm -L 25.4mm -R 25.4mm -T 25.4mm'
         args = f'{exe} {flags} "{html}" "{pdf}"'
         print(args)
         subprocess.call(args, shell=False)
