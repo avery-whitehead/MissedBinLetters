@@ -50,7 +50,7 @@ FROM (
 			ELSE NULL
 		END AS REF,
 		CASE
-			WHEN oldRECY > newRECY THEN 'X'
+			WHEN oldRECY <> newRECY THEN 'X'
 			ELSE NULL
 		END AS RECY,
 		CASE
@@ -79,7 +79,7 @@ FROM (
 				UPRN,
 				psr.serviceid,
 				MIN(r.ScheduleDayID) AS ScheduleDayID
-			FROM dbo.PropertyServiceRounds_180531_061215 psr
+			FROM dbo.PropertyServiceRounds_I_180703_033234 psr
 			LEFT JOIN (
 				SELECT *
 				FROM dbo.Rounds
@@ -129,7 +129,7 @@ FROM (
 	) n
 	ON l.uprn = n.uprn
 	WHERE oldREF <> newREF
-		OR oldRECY > newRECY
+		OR oldRECY <> newRECY
 		OR oldMIX <> newMIX
 		OR oldGLASS <> newGLASS
 		OR oldGW <> newGW
