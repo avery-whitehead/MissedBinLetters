@@ -218,7 +218,7 @@ def convert_html() -> str:
         A string denoting success
     """
     exe = '"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"'
-    htmls = glob.glob('.\\htmls\\changes\\*')
+    htmls = glob.glob('.\\htmls\\changes\\*.html')
     count = 0
     for html in htmls:
         out_f = html[16:-5]

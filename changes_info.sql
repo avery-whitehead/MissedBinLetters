@@ -79,7 +79,7 @@ FROM (
 				UPRN,
 				psr.serviceid,
 				MIN(r.ScheduleDayID) AS ScheduleDayID
-			FROM dbo.PropertyServiceRounds_I_180703_033234 psr
+			FROM dbo.PropertyServiceRounds psr
 			LEFT JOIN (
 				SELECT *
 				FROM dbo.Rounds
@@ -110,16 +110,25 @@ FROM (
 				UPRN,
 				psr.serviceid,
 				MIN(r.ScheduleDayID) AS ScheduleDayID
-			FROM dbo.PropertyServiceRounds psr
+			FROM (
+				SELECT *
+				FROM wmd.import
+				WHERE ver = (
+					SELECT MAX(ver)
+					FROM wmd.import
+				)
+			) psr
 			LEFT JOIN (
 				SELECT *
 				FROM dbo.Rounds
 				WHERE roundera = 2
 			) r
 			ON psr.roundid = r.RoundID
-			AND psr.ServiceID = r.ServiceID
-			WHERE psr.RoundEra = 2
-			GROUP BY uprn, psr.serviceid
+				AND psr.ServiceID=r.ServiceID
+            WHERE psr.RoundEra = 2
+            GROUP BY
+				uprn,
+				psr.serviceid
 		) a
 		PIVOT (
 			MIN(ScheduleDayID)
