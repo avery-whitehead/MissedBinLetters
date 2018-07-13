@@ -64,7 +64,7 @@ def create_html(change: CollectionChange) -> str:
         '<head>\n' \
         '<style>\n' \
         'body {\n' \
-        'font-family: "Arial", sans-serif;\n' \
+        'font-family: "Calibri", sans-serif;\n' \
         '}\n' \
         'h1 {\n' \
         'font-weight: normal;\n' \
@@ -72,30 +72,44 @@ def create_html(change: CollectionChange) -> str:
         'font-size: 36pt;\n' \
         'text-decoration: underline;\n' \
         '}\n' \
-        ' p {\n' \
-        'font-size: 11pt;\n' \
-        '}' \
+        'p {\n' \
+        'font-size: 12pt;\n' \
+        '}\n' \
         '.addr {\n' \
+        'position: fixed;\n' \
+        'top: 5cm;\n' \
+        'height: 4cm;\n' \
+        'left: 1.8cm;\n' \
+        'width: 9cm;\n' \
         'font-weight: bold;\n' \
-        'padding-top: 90px;\n' \
-        'font-size: 18px;\n' \
+        'font-size: 12pt;\n' \
         '}\n' \
         '.content {\n' \
-        'font-family: "Calibri"\n' \
+        'position: fixed;\n' \
+        'top: 15.5cm;\n' \
+        'left: 1.8cm;\n' \
+        'width: 17cm;\n' \
+        'height: 13cm;\n' \
+        'font-family: "Calibri";\n' \
+        'font-size: 12pt;\n' \
         '}\n' \
         '.header {\n' \
         'text-decoration: underline;\n' \
         '}\n' \
+        '.signature {\n' \
+        'position: fixed;\n' \
+        'left: 1.8cm;\n' \
+        'top: 25.5cm;\n' \
+        '}\n' \
         '.footer {\n' \
+        'position: fixed;\n' \
+        'left: 1.8cm;\n' \
         'font-size: 9pt;\n' \
+        'top: 27.5cm;\n' \
         'color: #808080;\n' \
         '}\n' \
-        'img {\n' \
-        'max-width: 100%;\n' \
-        'max-height: 75px;\n' \
-        '}\n' \
         '.hdc-td-greenborder {\n' \
-        'font-size: 12px;\n' \
+        'font-size: 12pt;\n' \
         '}\n' \
         '#collections-table {\n' \
         'color: #444444;\n' \
@@ -103,8 +117,6 @@ def create_html(change: CollectionChange) -> str:
         '}\n' \
         '.table {\n' \
         'width: 450px;\n' \
-        'text-align: center;\n' \
-        'border-collapse: collapse;\n' \
         '}\n' \
         '.table-striped tbody tr:nth-of-type(odd) {\n' \
         'background-color: #FFFFFF;\n' \
@@ -122,9 +134,7 @@ def create_html(change: CollectionChange) -> str:
         '</div>\n' \
         '<br>\n' \
         '<div class="content">\n' \
-        '<p>\n' \
         f'{date}\n' \
-        '</p>\n' \
         '<p>\n' \
         'Dear Sir/Madam\n' \
         '</p>\n' \
@@ -132,52 +142,47 @@ def create_html(change: CollectionChange) -> str:
         '<strong>Waste and Recycling Collections</strong>\n' \
         '</p>\n' \
         '<p>\n' \
-        'Earlier this month we implemented changes to our collections for ' \
-        'waste and recycling which meant changes for your home. ' \
-        'Unfortunately we have identified further amendments needed to ' \
-        'ensure the most efficient service delivery for our residents. ' \
-        'This only affects a small number of properties – but it includes ' \
+        'At the start of June 2018 we implemented changes to our ' \
+        'collections for waste and recycling which meant changes for your ' \
+        'home. Unfortunately we have identified further amendments needed ' \
+        'to ensure the most efficient service deliver for our residents. ' \
+        'This only affects a small number of properties - but it includes ' \
         'your home.\n' \
-        '<br>\n' \
+        '</p>\n' \
+        '<p>\n' \
         'Below are the details of the new fortnightly collection ' \
-        'arrangements for your property, which come into effect from ' \
-        'Monday 18 June 2018:\n' \
+        'arrangements for your property, which come into effect as ' \
+        'detailed below:\n' \
         '</p>\n' \
        f'{get_html_table(change.uprn)}\n' \
-        '<p>\n' \
         '<br>\n' \
-        'Please put your containers at your collection point by 6am.\n' \
-        '</p>\n' \
-        '<p>\n' \
-        'I would like to apologise for any inconvenience caused as a ' \
-        'result of these further changes.\n' \
-        '</p>\n' \
-        '<br>\n' \
-        '<p>\n' \
+        'Please put your containers at your collection point by 6am. I ' \
+        'would like to apologise for any inconvenience caused as a result ' \
+        'of these further changes.\n' \
+        '</div>\n' \
+        '<div class="signature">\n' \
         'Gary Brown\n' \
         '<br>\n' \
         '<span>\n' \
         'Waste & Street Scene Manager\n' \
         '</span>\n' \
-        '<br>\n' \
-        'WasteandStreetScene@hambleton.gov.uk\n' \
-        '</p>\n' \
-        '<p class="footer">\n' \
+        '<br> WasteandStreetScene@hambleton.gov.uk\n' \
+        '</div>\n' \
+        '<div class="footer">\n' \
         '<span style="color: #9EB4D0">\n' \
         'Hambleton District Council\n' \
         '</span>\n' \
-        '<br>\n' \
-        'Waste and Street Scene, Bridge End House\n' \
-        '<br>\n' \
-        'Darlington Road, Northallerton, North Yorkshire DL6 2PL\n' \
+        '<br> Waste and Street Scene, Bridge End House\n' \
+        '<br> Darlington Road, Northallerton, North Yorkshire DL6 2PL\n' \
         '<br>\n' \
         '<span style="font-size: 7pt">\n' \
-        'Some of our calls are recorded. For further information visit our ' \
-        'website www.hambleton.gov.uk to view the Call Recording Policy\n' \
+        'Some of our calls are recorded. For further information visit ' \
+        'our website www.hambleton.gov.uk to view the Call Recording ' \
+        'Policy\n' \
         '</span>\n' \
-        '</p>\n' \
+        '</div>\n' \
         '</body>\n' \
-        '</html>'
+        '</html>\n'
     return html
 
 def get_html_table(uprn: str) -> str:
@@ -225,7 +230,8 @@ def convert_html() -> str:
         pdf = f'.\\pdfs\\changes\\{out_f}.pdf'
         flags = '--proxy 127.0.0.1:3128 ' \
         '--disable-smart-shrinking ' \
-        '-B 0mm -L 25.4mm -R 25.4mm -T 25.4mm'
+        '-B 0mm -L 0mm -R 0mm -T 0mm'
+        #'-B 0mm -L 25.4mm -R 25.4mm -T 25.4mm'
         args = f'{exe} {flags} "{html}" "{pdf}"'
         print(args)
         subprocess.call(args, shell=False)

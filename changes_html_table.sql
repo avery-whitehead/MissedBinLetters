@@ -1,9 +1,9 @@
 DECLARE @html nvarchar(MAX)
 DECLARE @uprn varchar(12) = ?
 DECLARE @backdatedBy varchar(4) = '-1'
-DECLARE @text varchar(4) = 'no'
+DECLARE @text varchar(4) = 'Y'
 DECLARE @numWeeks int = 1
-DECLARE @tableHeight varchar(6) = '180px'
+DECLARE @tableHeight varchar(6) = 'px'
 DECLARE @pccCSS varchar(max) = ''
 DECLARE @datelimit date = '2018-11-30'
 
@@ -105,9 +105,9 @@ SELECT
 								'<tr xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">', '<tr>'),
 							'<th>', '<th class="hdc-td-greenborder">'),
 						'WeekCommencing', 'Week Starting'),
-					'500px', @tableHeight),
+					' height: 500px;', ''),
 				'<div class="table"', '<div id="collections-table" class="table ' + @pccCSS + '"'),
 			'NEWRecycling', 'Recycling'),
 		'https://', 'http://'),
-		'class="table" style="text-align: center;border-collapse:collapse;', 'class="table" style="text-align: center;border-collapse: collapse; margin-bottom: 20px;')
+		'class="table" style="text-align: center;border-collapse:collapse;', 'class="table" style="text-align: center; border-collapse: collapse; margin-bottom: 5px;')
 AS html
