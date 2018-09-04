@@ -1,12 +1,12 @@
 SELECT
 	'The Occupier' AS occup,
 	a.UPRN AS uprn,
-	a.ADDRESS_STR AS addr
+	a.ADDRESS_STR_POSTAL_FULL AS addr
 FROM
 (
 	SELECT
       l.UPRN,
-      l.ADDRESS_STR,
+      l.ADDRESS_STR_POSTAL_FULL,
       CASE
             WHEN oldREF = 0 THEN NULL
             ELSE oldREF
@@ -75,7 +75,7 @@ FROM
                         UPRN,
                         psr.ServiceID,
                         MIN(r.ScheduleDayID) AS ScheduleDayID
-                  FROM dbo.PropertyServiceRounds_I_180712_112921 psr
+                  FROM dbo.PropertyServiceRounds_I_180904_110146 psr
                   LEFT JOIN (
                         SELECT *
                         FROM dbo.Rounds
@@ -134,11 +134,4 @@ WHERE (
             GW IS NOT NULL AND
             oldGW IS NOT NULL
       )
-) 
-AND uprn IN (
-      '010001280423',
-      '010001280424',
-      '010001281787',
-      '010001281791',
-      '010001281794'
 )

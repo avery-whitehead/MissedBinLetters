@@ -1,5 +1,5 @@
 """
-gen_html.py
+new_rounds_gen_html.py
 How to run:
 Install pyodbc version 4.0.22 or greater
 From the command line, run `py -3 new_rounds_gen_html.py`
@@ -7,10 +7,13 @@ How it works:
 Generates an HTML file and uses wkhtmltopdf to convert it to a PDF
 Contains changes to a round
 """
+import os
 import glob
 import subprocess
 import datetime
 import json
+from time import sleep
+from PyPDF2 import PdfFileMerger, PdfFileReader
 import pyodbc
 
 class CollectionChange():
@@ -86,7 +89,7 @@ def create_html(change: CollectionChange) -> str:
         '}\n' \
         '.content {\n' \
         'position: fixed;\n' \
-        'top: 15.5cm;\n' \
+        'top: 11cm;\n' \
         'left: 1.8cm;\n' \
         'width: 17cm;\n' \
         'height: 13cm;\n' \
@@ -99,7 +102,7 @@ def create_html(change: CollectionChange) -> str:
         '.signature {\n' \
         'position: fixed;\n' \
         'left: 1.8cm;\n' \
-        'top: 25.5cm;\n' \
+        'top: 22cm;\n' \
         '}\n' \
         '.footer {\n' \
         'position: fixed;\n' \
@@ -180,7 +183,7 @@ def create_html(change: CollectionChange) -> str:
         'our website www.hambleton.gov.uk to view the Call Recording ' \
         'Policy\n' \
         '</span>\n' \
-        '</div>\n' \
+        '</div style="page-break-after: always;">\n' \
         '</body>\n' \
         '</html>\n'
     return html
@@ -228,19 +231,53 @@ def convert_html() -> str:
     for html in htmls:
         out_f = html[16:-5]
         pdf = f'.\\pdfs\\changes\\{out_f}.pdf'
-        flags = '--proxy 127.0.0.1:3128 ' \
-        '--disable-smart-shrinking ' \
+        flags = '--disable-smart-shrinking ' \
         '-B 0mm -L 0mm -R 0mm -T 0mm'
-        #'-B 0mm -L 25.4mm -R 25.4mm -T 25.4mm'
         args = f'{exe} {flags} "{html}" "{pdf}"'
         print(args)
         subprocess.call(args, shell=False)
         print(f'Converted {pdf}')
         count += 1
-    return f'Saved {count}/{len(htmls)} PDFs'
+    return f'Converted {count}/{len(htmls)} HTMLs to PDFs'
 
+def merge_pdfs(sys_date: str) -> str:
+    """
+    Merges each output PDF page into a single document
+    Args:
+        sys_date (str): A string of the date in YYYYmmddHHMM format, used as
+        the file name for the output file
+    Returns:
+        A string denoting success
+    """
+    pdfs = glob.glob('.\\pdfs\\changes\\*.pdf')
+    merger = PdfFileMerger()
+    count = 0
+    for pdf in pdfs:
+        merger.append(PdfFileReader(pdf), 'rb')
+        count += 1
+    with open(f'.\\pdfs\\changes\\out\\{sys_date}.pdf', 'wb') as pdf_out:
+        merger.write(pdf_out)
+    merger.close()
+    return f'Merged {count}/{len(pdfs)} PDFs'
+
+def clean_files() -> str:
+    """
+    Cleans up any leftover files, leaving only system files and the final PDF
+    output
+    Returns:
+        A string denoting success
+    """
+    count = 0
+    htmls_to_remove = glob.glob('.\\htmls\\changes\\*.html')
+    pdfs_to_remove = glob.glob('.\\pdfs\\changes\\*.pdf')
+    to_remove = htmls_to_remove + pdfs_to_remove
+    for remove_f in to_remove:
+        os.remove(remove_f)
+        count += 1
+    return f'Cleaned up {count} files'
 
 if __name__ == '__main__':
+    sys_date = datetime.datetime.today().strftime('%Y%m%d%H%M')
     with open ('.\\.config_chngs', 'r') as config_f:
         config = json.load(config_f)
     CONN = pyodbc.connect(
@@ -254,3 +291,6 @@ if __name__ == '__main__':
         html = create_html(change)
         print(save_html(html, change))
     print(convert_html())
+    print(merge_pdfs(sys_date))
+    print(clean_files())
+    print(f'Done! Output at /pdfs/changes/{sys_date}.pdf')

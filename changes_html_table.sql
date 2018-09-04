@@ -2,10 +2,11 @@ DECLARE @html nvarchar(MAX)
 DECLARE @uprn varchar(12) = ?
 DECLARE @backdatedBy varchar(4) = '-1'
 DECLARE @text varchar(4) = 'Y'
-DECLARE @numWeeks int = 1
+DECLARE @numWeeks int = 2
 DECLARE @tableHeight varchar(6) = 'px'
 DECLARE @pccCSS varchar(max) = ''
 DECLARE @datelimit date = '2018-11-30'
+DECLARE @showCurrent varchar(4) = 'N'
 
 IF (DATEADD(WEEK, @numWeeks, GETDATE()) > @datelimit)
 	SET @numWeeks = DATEDIFF(ww, GETDATE(), @datelimit) + @backdatedBy
@@ -15,11 +16,12 @@ IF OBJECT_ID('tempdb..#temp') IS NOT NULL
 
 SELECT *
 INTO #temp
-FROM dbo.[tvfPropertyCollectionsCalendar_U] (
+FROM dbo.[tvfPropertyCollectionsCalendar_U_2] (
 	@uprn,
 	@backdatedBy,
 	@numWeeks,
-	@text
+	@text,
+	@showCurrent
 )
 
 DECLARE @tabCols nvarchar(MAX) = ''
