@@ -12,7 +12,6 @@ import glob
 import subprocess
 import datetime
 import json
-from time import sleep
 from PyPDF2 import PdfFileMerger, PdfFileReader
 import pyodbc
 

@@ -1,12 +1,12 @@
 SELECT
 	'The Occupier' AS occup,
 	a.UPRN AS uprn,
-	a.ADDRESS_STR_POSTAL_FULL AS addr
+	a.ADDRESS_STR_ORG_POSTAL AS addr
 FROM
 (
 	SELECT
       l.UPRN,
-      l.ADDRESS_STR_POSTAL_FULL,
+      l.ADDRESS_STR_ORG_POSTAL,
       CASE
             WHEN oldREF = 0 THEN NULL
             ELSE oldREF

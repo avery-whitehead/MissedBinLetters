@@ -4,7 +4,7 @@ SELECT
 	'The Occupier' AS occupier,
 	REPLACE(REPLACE(l.ADDRESS_BLOCK, 'North Yorkshire' + CHAR(13) + CHAR(10), ''), CHAR(13) + CHAR(10), '<br>') AS address,
 	case_ref,
-	ADDRESS_STR as addr_str,
+	ADDRESS_STR_ORG_POSTAL as addr_str,
 	RecSacksRequested AS rec_sacks_requested
 FROM HDC_AF_GW_Missed_Collections.dbo.Missed_Collections m
 JOIN wasscollections.dbo.MV_HDC_LLPG_ADDRESSES_CURRENT l
