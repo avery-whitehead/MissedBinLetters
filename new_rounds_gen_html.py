@@ -32,15 +32,36 @@ class CollectionChange():
         self.addr_str = addr.replace(', ', '<br>')
         self.uprn = uprn
 
+def get_latest_table() -> str:
+    """
+    Gets the most recent table from the database to be used in
+    query_changes()
+    Returns:
+        str: The name of the most recently updated table
+    """
+    cursor = CONN.cursor()
+    cursor.execute('SELECT TOP 1 table_name ' \
+    'FROM information_schema.tables ' \
+    'WHERE LEN(table_name) = 37 ' \
+    'AND table_name LIKE \'PropertyServiceRounds_I_%\' ' \
+    'ORDER BY table_name DESC;')
+    table = cursor.fetchone()[0]
+    return table
 
-def query_changes() -> list:
+
+def query_changes(table: str) -> list:
     """
     Queries the SQL database for addresses of properties that are
     having a change in the collections
+    Args:
+        table (str): The most recent table to query from
+    Returns:
+        A list of CollectionChange objects
     """
     changes = []
     with open('.\\changes_info.sql', 'r') as changes_query_f:
         changes_query = changes_query_f.read()
+    changes_query = changes_query.replace('<newest_table>', table)
     cursor = CONN.cursor()
     cursor.execute(changes_query)
     results = cursor.fetchall()
@@ -285,7 +306,8 @@ if __name__ == '__main__':
         database=config['database'],
         uid=config['uid'],
         pwd=config['pwd'])
-    changes = query_changes()
+    table = get_latest_table()
+    changes = query_changes(table)
     for change in changes:
         html = create_html(change)
         print(save_html(html, change))
